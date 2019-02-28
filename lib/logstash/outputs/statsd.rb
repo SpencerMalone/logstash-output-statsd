@@ -103,7 +103,11 @@ class LogStash::Outputs::Statsd < LogStash::Outputs::Base
 
   public
   def receive(event)
-    
+    if @protocol == "udp"
+      if rand(1000) == 1
+        @client.connect
+      end
+    end
     @client.namespace = event.sprintf(@namespace) if not @namespace.empty?
     @logger.debug? and @logger.debug("Original sender: #{@sender}")
     sender = event.sprintf(@sender)
